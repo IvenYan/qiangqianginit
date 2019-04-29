@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wechat.qiangqiang.api.dao.MerchantProductClassifyMapper">
+    <resultMap id="BaseResultMap" type="com.wechat.qiangqiang.api.entity.MerchantProductClassify">
+        <result column="merchant_product_classify_id" property="merchantProductClassifyId" jdbcType="INTEGER"/>
+        <result column="merchant_product_classify_name" property="merchantProductClassifyName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="Integer" >
+    select merchant_product_classify_id,merchant_product_classify_name from  t_merchant_product_classify where merchant_product_classify_id= (#{merchantProductClassifyId,jdbcType=INTEGER} )
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="com.wechat.qiangqiang.api.entity.MerchantProductClassify">
+    select merchant_product_classify_id,merchant_product_classify_name from  t_merchant_product_classify
+  </select>
+<!--在使用中-->
+    <select id="selectByClassifyName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select merchant_product_classify_id,merchant_product_classify_name from  t_merchant_product_classify where t_merchant_product_classify.merchant_product_classify_name=#{merchantProductClassifyName,jdbcType=VARCHAR}
+  </select>
+
+    <insert id="insert" parameterType="com.wechat.qiangqiang.api.entity.MerchantProductClassify">
+    insert into t_merchant_product_classify (merchant_product_classify_id, merchant_product_classify_name
+      )
+    values (#{merchantProductClassifyId,jdbcType=INTEGER}, #{merchantProductClassifyName,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.wechat.qiangqiang.api.entity.MerchantProductClassify">
+        insert into t_merchant_product_classify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merchantProductClassifyId != null">
+                merchant_product_classify_id,
+            </if>
+            <if test="merchantProductClassifyName != null">
+                merchant_product_classify_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merchantProductClassifyId != null">
+                #{merchantProductClassifyId,jdbcType=INTEGER},
+            </if>
+            <if test="merchantProductClassifyName != null">
+                #{merchantProductClassifyName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

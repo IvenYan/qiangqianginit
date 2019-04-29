@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wechat.qiangqiang.api.dao.MerchantMapper">
+  <resultMap id="BaseResultMap" type="com.wechat.qiangqiang.api.entity.Merchant">
+    <result column="merchant_id" jdbcType="INTEGER" property="merchantId" />
+    <result column="merchant_name" jdbcType="VARCHAR" property="merchantName" />
+  </resultMap>
+  <insert id="insert" parameterType="com.wechat.qiangqiang.api.entity.Merchant">
+    insert into t_merchant (merchant_id, merchant_name)
+    values (#{merchantId,jdbcType=INTEGER}, #{merchantName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wechat.qiangqiang.api.entity.Merchant">
+    insert into t_merchant
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantId != null">
+        merchant_id,
+      </if>
+      <if test="merchantName != null">
+        merchant_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantName != null">
+        #{merchantName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

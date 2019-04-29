@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wechat.qiangqiang.api.dao.MerchantProductMapper">
+  <resultMap id="BaseResultMap" type="com.wechat.qiangqiang.api.entity.MerchantProduct" >
+    <id column="merchant_product_id" property="merchantProductId" jdbcType="INTEGER" />
+    <result column="merchant_product_status" property="merchantProductStatus" jdbcType="VARCHAR" />
+    <result column="merchant_product_brand_id" property="merchantProductBrandId" jdbcType="VARCHAR" />
+    <result column="merchant_product_brand_name" property="merchantProductBrandName" jdbcType="VARCHAR" />
+    <result column="merchant_product_name" property="merchantProductName" jdbcType="VARCHAR" />
+    <result column="merchant_product_taste" property="merchantProductTaste" jdbcType="VARCHAR" />
+    <result column="merchant_product_degree" property="merchantProductDegree" jdbcType="VARCHAR" />
+    <result column="merchant_product_spec" property="merchantProductSpec" jdbcType="VARCHAR" />
+    <result column="merchant_product_unit" property="merchantProductUnit" jdbcType="VARCHAR" />
+    <result column="merchant_product_price" property="merchantProductPrice" jdbcType="DECIMAL" />
+    <result column="merchant_product_image_name" property="merchantProductImageName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wechat.qiangqiang.api.entity.MerchantProduct">
+    <result column="merchant_product_detail" jdbcType="LONGVARCHAR" property="merchantProductDetail" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    merchant_product_id, merchant_product_status,merchant_product_brand_id,merchant_product_brand_name, merchant_product_name,merchant_product_spec, merchant_product_unit,CAST(merchant_product_price AS CHAR) merchant_product_price, merchant_product_detail
+  </sql>
+  <sql id="Hot_Product_List">
+    merchant_product_id, merchant_product_status,merchant_product_brand_id,merchant_product_brand_name, merchant_product_name,merchant_product_spec, merchant_product_unit,merchant_product_image_name,CAST(merchant_product_price AS CHAR) merchant_product_price
+  </sql>
+
+  <sql id="Blob_Column_List">
+    merchant_product_detail
+  </sql>
+
+  <select id="countMerchantProductAll" resultType="Integer">
+    select count(*) from t_merchant_product
+  </select>
+  <select id="listProductSimple" resultMap="BaseResultMap">
+    select <include refid="Hot_Product_List" /> from t_merchant_product a left join t_merchant_product_brand b on a.merchant_product_brand_id=b.brand_id order by b.hot_no
+  </select>
+  <!--分页+搜索-->
+  <select id="countMerchantProductAllBySearch" resultType="Integer">
+    select count(*) from t_merchant_product
+    <if test="searchProductName != null and searchProductName != ''">
+      where merchant_product_name like concat('%',#{param1,jdbcType=VARCHAR},'%') or merchant_product_brand_name like concat('%',#{param1,jdbcType=VARCHAR},'%')
+    </if>
+  </select>
+  <select id="listProductSimpleBySearch" resultMap="BaseResultMap">
+    select <include refid="Hot_Product_List" /> from t_merchant_product a left join t_merchant_product_brand b on a.merchant_product_brand_id=b.brand_id
+    <if test="searchProductName != null and searchProductName != ''">
+      where merchant_product_name like concat('%',#{param1,jdbcType=VARCHAR},'%') or merchant_product_brand_name like concat('%',#{param1,jdbcType=VARCHAR},'%')
+    </if>
+    order by b.hot_no desc
+  </select>
+
+
+  <!--热门商品根据商户的存量-->
+  <select id="listHotMerchantProductByMerchantInventory" resultMap="ResultMapWithBLOBs"  parameterType="Integer">
+    select a.<include refid="Hot_Product_List" /> from t_merchant_product a left join t_merchant_product_inventory b
+    on a.merchant_product_id=b.merchant_product_id order by b.merchant_product_inventory_amount
+    desc limit #{param1,jdbcType=INTEGER}
+  </select>
+  <!--热门商品根据后台设定的hot 值-->
+  <select id="listHotMerchantProductByBrandHot" resultMap="ResultMapWithBLOBs"  parameterType="Integer">
+    select a.<include refid="Hot_Product_List" />  from t_merchant_product a left join t_merchant_product_brand b
+    on a.merchant_product_brand_id=b.brand_id order by b.hot_no
+    desc limit #{param1,jdbcType=INTEGER}
+  </select>
+  <select id="listProductByBrandId" resultMap="ResultMapWithBLOBs"  parameterType="Integer">
+    select <include refid="Hot_Product_List" /> from t_merchant_product where merchant_product_brand_id= #{param1,jdbcType=INTEGER}
+  </select>
+  <insert id="insert" parameterType="com.wechat.qiangqiang.api.entity.MerchantProduct" >
+    insert into t_merchant_product ( merchant_product_status,
+      merchant_product_brand_id,merchant_product_brand_name, merchant_product_name,
+      merchant_product_taste, merchant_product_degree,
+      merchant_product_spec, merchant_product_unit,
+      merchant_product_price, merchant_product_image_name,
+      merchant_product_detail)
+    values (#{merchantProductStatus,jdbcType=VARCHAR},
+      #{merchantProductBrandId,jdbcType=VARCHAR}, #{merchantProductBrandName,jdbcType=VARCHAR}, #{merchantProductName,jdbcType=VARCHAR},
+      #{merchantProductTaste,jdbcType=VARCHAR}, #{merchantProductDegree,jdbcType=VARCHAR},
+      #{merchantProductSpec,jdbcType=VARCHAR}, #{merchantProductUnit,jdbcType=VARCHAR},
+      #{merchantProductPrice,jdbcType=DECIMAL}, #{merchantProductImageName,jdbcType=VARCHAR},
+      #{merchantProductDetail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wechat.qiangqiang.api.entity.MerchantProduct">
+    insert into t_merchant_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantProductStatus != null">
+        merchant_product_status,
+      </if>
+      <if test="merchantProductBrandId != null">
+        merchant_product_brand_id,
+      </if>
+      <if test="merchantProductName != null">
+        merchant_product_name,
+      </if>
+      <if test="merchantProductSpec != null">
+        merchant_product_spec,
+      </if>
+      <if test="merchantProductUnit != null">
+        merchant_product_unit,
+      </if>
+      <if test="merchantProductPrice != null">
+        merchant_product_price,
+      </if>
+      <if test="merchantProductDetail != null">
+        merchant_product_detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantProductStatus != null">
+        #{merchantProductStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductBrandId != null">
+        #{merchantProductBrandId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantProductName != null">
+        #{merchantProductName,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductSpec != null">
+        #{merchantProductSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductUnit != null">
+        #{merchantProductUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductPrice != null">
+        #{merchantProductPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="merchantProductDetail != null">
+        #{merchantProductDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wechat.qiangqiang.api.entity.MerchantProduct" >
+    update t_merchant_product
+    <set >
+      <if test="merchantProductStatus != null" >
+        merchant_product_status = #{merchantProductStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductBrandId != null" >
+        merchant_product_brand_id = #{merchantProductBrandId,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductBrandName != null" >
+        merchant_product_brand_name = #{merchantProductBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductName != null" >
+        merchant_product_name = #{merchantProductName,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductTaste != null" >
+        merchant_product_taste = #{merchantProductTaste,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductDegree != null" >
+        merchant_product_degree = #{merchantProductDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductSpec != null" >
+        merchant_product_spec = #{merchantProductSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductUnit != null" >
+        merchant_product_unit = #{merchantProductUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductPrice != null" >
+        merchant_product_price = #{merchantProductPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="merchantProductImageName != null" >
+        merchant_product_image_name = #{merchantProductImageName,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantProductDetail != null" >
+        merchant_product_detail = #{merchantProductDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where merchant_product_id = #{merchantProductId,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteProductById">
+    DELETE from t_merchant_product where merchant_product_id=#{param1,jdbcType=INTEGER}
+  </delete>
+
+
+</mapper>

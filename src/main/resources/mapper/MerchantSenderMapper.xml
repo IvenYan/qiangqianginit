@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wechat.qiangqiang.api.dao.MerchantSenderMapper">
+  <resultMap id="BaseResultMap" type="com.wechat.qiangqiang.api.entity.MerchantSender">
+    <result column="merchant_sender_id" jdbcType="INTEGER" property="merchantSenderId" />
+    <result column="merchant_sender_name" jdbcType="VARCHAR" property="merchantSenderName" />
+    <result column="merchant_sender_tel" jdbcType="VARCHAR" property="merchantSenderTel" />
+  </resultMap>
+  <insert id="insert" parameterType="com.wechat.qiangqiang.api.entity.MerchantSender">
+    insert into t_merchant_sender (merchant_sender_id, merchant_sender_name, 
+      merchant_sender_tel)
+    values (#{merchantSenderId,jdbcType=INTEGER}, #{merchantSenderName,jdbcType=VARCHAR}, 
+      #{merchantSenderTel,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.wechat.qiangqiang.api.entity.MerchantSender">
+    insert into t_merchant_sender
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantSenderId != null">
+        merchant_sender_id,
+      </if>
+      <if test="merchantSenderName != null">
+        merchant_sender_name,
+      </if>
+      <if test="merchantSenderTel != null">
+        merchant_sender_tel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantSenderId != null">
+        #{merchantSenderId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantSenderName != null">
+        #{merchantSenderName,jdbcType=VARCHAR},
+      </if>
+      <if test="merchantSenderTel != null">
+        #{merchantSenderTel,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

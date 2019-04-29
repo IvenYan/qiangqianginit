@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wechat.qiangqiang.api.dao.MerchantProductInventoryMapper">
+  <resultMap id="BaseResultMap" type="com.wechat.qiangqiang.api.entity.MerchantProductInventory">
+    <result column="merchant_product_inventory_id" jdbcType="INTEGER" property="merchantProductInventoryId" />
+    <result column="merchant_product_id" jdbcType="INTEGER" property="merchantProductId" />
+    <result column="merchant_id" jdbcType="INTEGER" property="merchantId" />
+    <result column="merchant_product_inventory_amount" jdbcType="INTEGER" property="merchantProductInventoryAmount" />
+  </resultMap>
+  <insert id="insert" parameterType="com.wechat.qiangqiang.api.entity.MerchantProductInventory">
+    insert into t_merchant_product_inventory (merchant_product_inventory_id, merchant_product_id, 
+      merchant_id, merchant_product_inventory_amount
+      )
+    values (#{merchantProductInventoryId,jdbcType=INTEGER}, #{merchantProductId,jdbcType=INTEGER}, 
+      #{merchantId,jdbcType=INTEGER}, #{merchantProductInventoryAmount,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wechat.qiangqiang.api.entity.MerchantProductInventory">
+    insert into t_merchant_product_inventory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="merchantProductInventoryId != null">
+        merchant_product_inventory_id,
+      </if>
+      <if test="merchantProductId != null">
+        merchant_product_id,
+      </if>
+      <if test="merchantId != null">
+        merchant_id,
+      </if>
+      <if test="merchantProductInventoryAmount != null">
+        merchant_product_inventory_amount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="merchantProductInventoryId != null">
+        #{merchantProductInventoryId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantProductId != null">
+        #{merchantProductId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantProductInventoryAmount != null">
+        #{merchantProductInventoryAmount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>
